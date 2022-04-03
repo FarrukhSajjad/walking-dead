@@ -11,13 +11,6 @@ public class PlayerController : MonoBehaviour
     [Header("Player gravity and animator")]
     public CharacterController cc;
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -33,7 +26,10 @@ public class PlayerController : MonoBehaviour
 
         if (direction.magnitude >= 0.1f)
         {
+            var targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, targetAngle, 0);
             cc.Move(direction.normalized * playerSpeed * Time.deltaTime);
+        
         }
     }
 }
