@@ -12,6 +12,10 @@ public class ThirdPersonShooterController : MonoBehaviour
 
     [SerializeField] private LayerMask aimColliderMask = new LayerMask();
     [SerializeField] private Transform debugTransform;
+    [SerializeField] private Transform bulletPrefab;
+    [SerializeField] private Transform spawnBulletPosition;
+
+
 
     private void Awake()
     {
@@ -48,6 +52,12 @@ public class ThirdPersonShooterController : MonoBehaviour
         }
 
 
+        if (starterAssetsInput.shoot)
+        {
+            var aimDirec = (mouseWorldPoint - spawnBulletPosition.position).normalized; 
+            Instantiate(bulletPrefab, spawnBulletPosition.position, Quaternion.LookRotation(aimDirec, Vector3.up));
+            starterAssetsInput.shoot = false;
+        }
 
     }
 }
