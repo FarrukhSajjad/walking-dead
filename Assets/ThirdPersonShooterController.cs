@@ -12,10 +12,9 @@ public class ThirdPersonShooterController : MonoBehaviour
 
     [SerializeField] private LayerMask aimColliderMask = new LayerMask();
     [SerializeField] private Transform debugTransform;
-    [SerializeField] private Transform bulletPrefab;
-    [SerializeField] private Transform spawnBulletPosition;
 
-
+    [SerializeField] private Transform redEffect;
+    [SerializeField] private Transform greenEffect;
 
     private void Awake()
     {
@@ -30,11 +29,12 @@ public class ThirdPersonShooterController : MonoBehaviour
         Vector3 mouseWorldPoint = Vector3.zero;
         var screenCenterPoint = new Vector2(Screen.width / 2, Screen.height / 2);
         var ray = Camera.main.ScreenPointToRay(screenCenterPoint);
-
+        Transform hitTarget = null;
         if (Physics.Raycast(ray, out RaycastHit raycastHit, 999f, aimColliderMask))
         {
             debugTransform.position = raycastHit.point;
             mouseWorldPoint = raycastHit.point;
+            hitTarget = raycastHit.transform;
         }
 
         if (starterAssetsInput.aim)
@@ -54,9 +54,22 @@ public class ThirdPersonShooterController : MonoBehaviour
 
         if (starterAssetsInput.shoot)
         {
-            var aimDirec = (mouseWorldPoint - spawnBulletPosition.position).normalized; 
-            Instantiate(bulletPrefab, spawnBulletPosition.position, Quaternion.LookRotation(aimDirec, Vector3.up));
-            starterAssetsInput.shoot = false;
+            if (hitTarget != null)
+            {
+                if (hitTarget.GetComponent<BulletTarget>() != null)
+                {
+                    Instantiate(greenEffect, raycastHit.transform.position, Quaternion.identity);
+                    Debug.Log($"Hit target: {hitTarget.name}");
+                }
+                else
+                {
+                    Instantiate(redEffect, raycastHit.transform.position, Quaternion.identity);
+                    Debug.Log($"Hit target: {hitTarget.name}");
+                }
+
+
+                starterAssetsInput.shoot = false;
+            }
         }
 
     }
